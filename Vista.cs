@@ -182,39 +182,18 @@ namespace Calculadora
         }
         private void btnPunto_Click(object sender, EventArgs e)
         {
-            /*
-            if (pantalla.TextLength != 0)
-            {
-                int ultimo = pantalla.Text[pantalla.Text.Length - 1];
-                if(!contieneDecimal(controlador1.getUltimo()) && ultimo != 41)
-                {
-                    pantalla.Text = pantalla.Text+",";
-                    controlador1.addUltimo(",");
-                }else if(ultimo == 61)
-                {
-                    pantalla.Text = ",";
-                    pantallaRes.Text = "";
-                    controlador1.setUltimo("");
-                }
-            }
-            else
-            {
-                pantalla.Text = ",";
-                controlador1.addUltimo(",");
-            }
-            */
-            controlador.colocarPunto();
-                
+            controlador.colocarPunto();   
         }
         private void btnDividir_Click(object sender, EventArgs e)
         {
             // operacion("/", 4);
-            pantalla.Text = pantalla.Text + "/";
+            controlador.division();
         }
 
         private void btnMultip_Click(object sender, EventArgs e)
         {
             //operacion("x", 3);
+            controlador.multiplicacion();
         }
 
         private void btnResta_Click(object sender, EventArgs e)
@@ -225,6 +204,7 @@ namespace Calculadora
         private void btnSuma_Click(object sender, EventArgs e)
         {
             //operacion("+", 1);
+            controlador.suma();
         }
 
         private void btnIgual_Click(object sender, EventArgs e)

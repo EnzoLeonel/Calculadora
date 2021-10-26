@@ -11,7 +11,7 @@ namespace Calculadora
         Vista vista;
         Modelo modelo;
         public Controlador() { }
-        public Controlador(Vista vista,Modelo modelo)
+        public Controlador(Vista vista, Modelo modelo)
         {
             this.vista = vista;
             this.modelo = modelo;
@@ -19,13 +19,17 @@ namespace Calculadora
         public int ultimoCaracter()
         {
             int ultimo = 0;
-            ultimo = vista.pantalla.Text[vista.pantalla.TextLength - 1];
+            try
+            {
+                ultimo = vista.pantalla.Text[vista.pantalla.TextLength - 1];
+            }
+            catch (IndexOutOfRangeException) { }
             return ultimo;
         }
         public bool pantallaVacia()
         {
             bool vacia = false;
-            if(vista.pantalla.TextLength == 0)
+            if (vista.pantalla.TextLength == 0)
             {
                 vacia = true;
             }
@@ -40,7 +44,7 @@ namespace Calculadora
             }
             return vacia;
         }
-        
+
         //Funcion ultilizada para comprobar si un string contiene decimal, para evitar poner doble coma
         public bool contieneDecimal(String numero)
         {
@@ -58,7 +62,7 @@ namespace Calculadora
         {
             bool numero = false;
             int ultimo = ultimoCaracter();
-            if(ultimo >= 48 && ultimo <= 57)
+            if (ultimo >= 48 && ultimo <= 57)
             {
                 numero = true;
             }
@@ -97,6 +101,9 @@ namespace Calculadora
             vista.pantallaRes.Text = "";
             modelo.setUltimoNumero("");
             modelo.setSumas(new List<float>());
+            modelo.setParentesis(new List<Modelo>());
+            modelo.setBinomio(0);
+            modelo.setOperacion(0);
         }
         public void colocarNumero(string numero)
         {
@@ -117,7 +124,7 @@ namespace Calculadora
                     case 48:
                         if (float.Parse(modelo.getUltimoNumero()) == 0 && !contieneDecimal(modelo.getUltimoNumero()))
                         {
-                            vista.pantalla.Text = vista.pantalla.Text.Substring(0, vista.pantalla.Text.Length - 1)+numero;
+                            vista.pantalla.Text = vista.pantalla.Text.Substring(0, vista.pantalla.Text.Length - 1) + numero;
                         }
                         else
                         {
@@ -126,9 +133,9 @@ namespace Calculadora
                         }
                         break;
 
-                        //En el caso de una division, si se coloca un 0, muestra pantalla de error
+                    //En el caso de una division, si se coloca un 0, muestra pantalla de error
                     case 47:
-                        if(numero != "0")
+                        if (numero != "0")
                         {
                             vista.pantalla.Text = vista.pantalla.Text + numero;
                             modelo.addUltimoNumero(numero);
@@ -154,6 +161,142 @@ namespace Calculadora
                 vista.pantalla.Text = numero;
                 modelo.addUltimoNumero(numero);
             }
+        }
+        public void suma()
+        {
+            int ultimo = ultimoCaracter();
+            //Si el ultimo es un numero o es un ")"
+            if (ultimoEsNumero() || ultimo == 41)
+            {
+                float resultado;
+                switch (modelo.getOperacion())
+                {
+                    case 0:
+                        //Guarda el ultimo numero escrito en un nuevo termino
+                        modelo.addTermino(float.Parse(modelo.getUltimoNumero()));
+                        modelo.setUltimoNumero("");
+                        vista.pantalla.Text = vista.pantalla.Text + "+";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+
+                    case 1:
+                        //Existe una operacion de multiplicar pendiente
+                        resultado = modelo.getBinomio() * float.Parse(modelo.getUltimoNumero());
+                        modelo.addTermino(resultado);
+                        modelo.setUltimoNumero("");
+                        modelo.setOperacion(0);
+                        vista.pantalla.Text = vista.pantalla.Text + "+";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+
+                    case 2:
+                        //Existe una operacion de division pendiente
+                        resultado = modelo.getBinomio() / float.Parse(modelo.getUltimoNumero());
+                        modelo.addTermino(resultado);
+                        modelo.setUltimoNumero("");
+                        modelo.setOperacion(0);
+                        vista.pantalla.Text = vista.pantalla.Text + "+";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+                }
+            }
+        }
+        public void resta() 
+        { 
+
+        }
+        public void multiplicacion()
+        {
+            int ultimo = ultimoCaracter();
+            if (ultimoEsNumero() || ultimo == 41)
+            {
+                float resultado;
+                switch (modelo.getOperacion())
+                {
+                    case 0:
+                        //Guarda el ultimo numero escrito en el binomio para poder multiplicarlo
+                        //con el siguiente que se escriba
+                        modelo.setBinomio(float.Parse(modelo.getUltimoNumero()));
+                        modelo.setUltimoNumero("");
+                        // Operacion 1 = Multiplicar
+                        modelo.setOperacion(1);
+                        vista.pantalla.Text = vista.pantalla.Text + "x";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+
+                    case 1:
+                        //Existe una operacion de multiplicar pendiente y se requiere realizar otra
+                        resultado = modelo.getBinomio() * float.Parse(modelo.getUltimoNumero());
+                        modelo.setBinomio(resultado);
+                        modelo.setUltimoNumero("");
+                        vista.pantalla.Text = vista.pantalla.Text + "x";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+
+                    case 2:
+                        //Existe una operacion de dividir pendiente y se requiere realizar una multiplicacion
+                        resultado = modelo.getBinomio() / float.Parse(modelo.getUltimoNumero());
+                        modelo.setBinomio(resultado);
+                        modelo.setUltimoNumero("");
+                        modelo.setOperacion(1);
+                        vista.pantalla.Text = vista.pantalla.Text + "x";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+                }
+            }
+        }
+        public void division()
+        {
+            int ultimo = ultimoCaracter();
+            if (ultimoEsNumero() || ultimo == 41)
+            {
+                float resultado;
+                switch (modelo.getOperacion())
+                {
+                    case 0:
+                        //Guarda el ultimo numero escrito en el binomio para poder dividirlo
+                        //con el siguiente que se escriba
+                        modelo.setBinomio(float.Parse(modelo.getUltimoNumero()));
+                        modelo.setUltimoNumero("");
+                        // Operacion 2 = Dividir
+                        modelo.setOperacion(2);
+                        vista.pantalla.Text = vista.pantalla.Text + "/";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+
+                    case 1:
+                        //Existe una operacion de multiplicar pendiente y se requiere realizar una division
+                        resultado = modelo.getBinomio() * float.Parse(modelo.getUltimoNumero());
+                        modelo.setBinomio(resultado);
+                        modelo.setUltimoNumero("");
+                        modelo.setOperacion(2);
+                        vista.pantalla.Text = vista.pantalla.Text + "/";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+
+                    case 2:
+                        //Existe una operacion de dividir pendiente y se requiere realizar otra
+                        resultado = modelo.getBinomio() / float.Parse(modelo.getUltimoNumero());
+                        modelo.setBinomio(resultado);
+                        modelo.setUltimoNumero("");
+                        vista.pantalla.Text = vista.pantalla.Text + "/";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+                }
+            }
+        }
+        public float resultadoParcial()
+        {
+            float resultado = 0;
+            if (modelo.getSumas().Count() > 0)
+            {
+                
+                foreach(float t in modelo.getSumas())
+                {
+                    resultado += t;
+                }
+            }
+            return resultado;
         }
     }
 }
