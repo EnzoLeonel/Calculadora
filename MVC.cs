@@ -14,9 +14,12 @@ namespace Calculadora
         [STAThread]
         static void Main()
         {
+            Modelo modelo = new Modelo();
+            Vista vista = new Vista();
+            Controlador controlador = new Controlador(vista, modelo);
+            vista.setControlador(controlador);
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Vista());
+            Application.Run(vista);
         }
     }
 }

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Calculadora
 {
-    class Controlador
+    public class Controlador
     {
         Vista vista;
         Modelo modelo;
+        public Controlador() { }
         public Controlador(Vista vista,Modelo modelo)
         {
             this.vista = vista;
@@ -39,7 +40,7 @@ namespace Calculadora
             }
             return vacia;
         }
-
+        
         //Funcion ultilizada para comprobar si un string contiene decimal, para evitar poner doble coma
         public bool contieneDecimal(String numero)
         {
@@ -64,13 +65,54 @@ namespace Calculadora
             return numero;
         }
 
-        public void colocarNumero(string numero)
+        //Metodo para colocar "0" con algunas excepciones al resto de numeros
+        public void colocarCero()
+        {
+            switch (ultimoCaracter())
+            {
+                //En caso que sea un "/", muestra un error por pantalla
+                case 47:
+                    vista.pantalla.Text = "No se puede dividir entre cero=";
+                    vista.pantallaRes.Text = "";
+                    modelo.setUltimoNumero("");
+                    break;
+
+                //En caso que sea un "0", comprueba que no se esten colocando "00"
+                case 48:
+                    if (contieneDecimal(modelo.getUltimoNumero()))
+                    {
+                        vista.pantalla.Text = vista.pantalla.Text + "0";
+                        modelo.addUltimoNumero("0");
+                    }
+                    else if (float.Parse(modelo.getUltimoNumero()) != 0)
+                    {
+                        vista.pantalla.Text = vista.pantalla.Text + "0";
+                        modelo.addUltimoNumero("0");
+                    }
+                    break;
+
+                default:
+                    vista.pantalla.Text = vista.pantalla.Text + "0";
+                    modelo.addUltimoNumero("0");
+                    break;
+            }
+        }
+        public void borrarTodo()
+        {
+            vista.pantalla.Text = "";
+            vista.pantallaRes.Text = "";
+            modelo.setUltimoNumero("");
+            modelo.setSumas(new List<float>());
+        }
+
+    public void colocarNumero(string numero)
         {
             //Si la pantalla NO esta vacia
             if (!pantallaVacia())
             {
+                int ultimo = ultimoCaracter();
                 //Verifica si el ultimo caracter es un "=" o un "0"
-                switch (ultimoCaracter())
+                switch (ultimo)
                 {
                     case 61:
                         vista.pantalla.Text = "";
@@ -79,15 +121,26 @@ namespace Calculadora
                         break;
 
                     //En caso de ser 0, COLOCAR EN UNA FUNCION ESPECIAL, SIRVE PARA COLOCAR 0 SOLAMENTE SI EL NUMERO ES UN 0,00
-                    /*
                     case 48:
                         if (float.Parse(modelo.getUltimoNumero()) == 0 && !contieneDecimal(modelo.getUltimoNumero()))
                         {
-                            vista.pantalla.Text = vista.pantalla.Text.Substring(0, vista.pantalla.Text.Length - 1);
+                            vista.pantalla.Text = vista.pantalla.Text.Substring(0, vista.pantalla.Text.Length - 1)+numero;
                         }
                         break;
-                    */
+
+                    case 41:
+                        break;
+
+                    default:
+                        vista.pantalla.Text = vista.pantalla.Text + numero;
+                        modelo.addUltimoNumero(numero);
+                        break;
                 }
+            }
+            else
+            {
+                vista.pantalla.Text = numero;
+                modelo.addUltimoNumero(numero);
             }
         }
     }
