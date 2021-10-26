@@ -203,11 +203,13 @@ namespace Calculadora
                 controlador1.addUltimo(",");
             }
             */
+            controlador.colocarPunto();
                 
         }
         private void btnDividir_Click(object sender, EventArgs e)
         {
-           // operacion("/", 4);
+            // operacion("/", 4);
+            pantalla.Text = pantalla.Text + "/";
         }
 
         private void btnMultip_Click(object sender, EventArgs e)

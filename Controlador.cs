@@ -66,35 +66,29 @@ namespace Calculadora
         }
 
         //Metodo para colocar "0" con algunas excepciones al resto de numeros
-        public void colocarCero()
+        public void colocarPunto()
         {
-            switch (ultimoCaracter())
+            if (!pantallaVacia())
             {
-                //En caso que sea un "/", muestra un error por pantalla
-                case 47:
-                    vista.pantalla.Text = "No se puede dividir entre cero=";
-                    vista.pantallaRes.Text = "";
-                    modelo.setUltimoNumero("");
-                    break;
-
-                //En caso que sea un "0", comprueba que no se esten colocando "00"
-                case 48:
-                    if (contieneDecimal(modelo.getUltimoNumero()))
-                    {
-                        vista.pantalla.Text = vista.pantalla.Text + "0";
-                        modelo.addUltimoNumero("0");
-                    }
-                    else if (float.Parse(modelo.getUltimoNumero()) != 0)
-                    {
-                        vista.pantalla.Text = vista.pantalla.Text + "0";
-                        modelo.addUltimoNumero("0");
-                    }
-                    break;
-
-                default:
-                    vista.pantalla.Text = vista.pantalla.Text + "0";
-                    modelo.addUltimoNumero("0");
-                    break;
+                int ultimo = ultimoCaracter();
+                //Si el ultimo numero NO contiene decimal y no es un ")", coloca un punto
+                if (!contieneDecimal(modelo.getUltimoNumero()) && ultimo != 41)
+                {
+                    vista.pantalla.Text = vista.pantalla.Text + ",";
+                    modelo.addUltimoNumero(",");
+                }
+                //Sino si el ultimo es un "=", borra todo y coloca un punto
+                else if (ultimo == 61)
+                {
+                    borrarTodo();
+                    vista.pantalla.Text = ",";
+                    modelo.addUltimoNumero(",");
+                }
+            }
+            else
+            {
+                vista.pantalla.Text = ",";
+                modelo.addUltimoNumero(",");
             }
         }
         public void borrarTodo()
@@ -104,8 +98,7 @@ namespace Calculadora
             modelo.setUltimoNumero("");
             modelo.setSumas(new List<float>());
         }
-
-    public void colocarNumero(string numero)
+        public void colocarNumero(string numero)
         {
             //Si la pantalla NO esta vacia
             if (!pantallaVacia())
@@ -115,9 +108,9 @@ namespace Calculadora
                 switch (ultimo)
                 {
                     case 61:
-                        vista.pantalla.Text = "";
-                        vista.pantallaRes.Text = "";
-                        modelo.setUltimoNumero("");
+                        borrarTodo();
+                        vista.pantalla.Text = numero;
+                        modelo.addUltimoNumero("0");
                         break;
 
                     //En caso de ser 0, COLOCAR EN UNA FUNCION ESPECIAL, SIRVE PARA COLOCAR 0 SOLAMENTE SI EL NUMERO ES UN 0,00
@@ -126,8 +119,27 @@ namespace Calculadora
                         {
                             vista.pantalla.Text = vista.pantalla.Text.Substring(0, vista.pantalla.Text.Length - 1)+numero;
                         }
+                        else
+                        {
+                            vista.pantalla.Text = vista.pantalla.Text + numero;
+                            modelo.addUltimoNumero(numero);
+                        }
                         break;
 
+                        //En el caso de una division, si se coloca un 0, muestra pantalla de error
+                    case 47:
+                        if(numero != "0")
+                        {
+                            vista.pantalla.Text = vista.pantalla.Text + numero;
+                            modelo.addUltimoNumero(numero);
+                        }
+                        else
+                        {
+                            vista.pantalla.Text = "No se puede dividir entre cero=";
+                            vista.pantallaRes.Text = "";
+                            modelo.setUltimoNumero("");
+                        }
+                        break;
                     case 41:
                         break;
 
