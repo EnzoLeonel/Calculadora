@@ -21,116 +21,18 @@ namespace Calculadora
         {
             this.controlador = controlador;
         }
-        /*
-        private void operacion(string operacion, int id)
-        {
-            try
-            {
-                int ultimo = pantalla.Text[pantalla.Text.Length - 1];
-                //Si lo ultimo ingresado es un numero y se intenta realizar suma
-                if ((ultimo >= 48 && ultimo <= 57) && (id == 1))
-                {
-                    controlador1.nuevoTermino(float.Parse(controlador1.getUltimo()));
-                    controlador1.setUltimo(operacion);
-                    if(pantallaRes.TextLength == 0)
-                    {
-                        pantallaRes.Text = pantalla.Text;
-                    }
-                    else
-                    {
-                        pantallaRes.Text = controlador1.resultadoTemp().ToString();
-                    }
-                    pantalla.Text = pantalla.Text + operacion;
-                }
-                else if((ultimo >= 48 && ultimo <= 57) && (id >= 3))
-                {
-
-                }
-            }
-            //Control de excepciones en caso de que el usuario coloque un "operador" estando el campo vacio
-            catch (IndexOutOfRangeException)
-            {
-                //Si la pantalla esta en blanco y se presiona un operador, si es distinto a 2, no coloca nada
-                if (id != 2)
-                {
-                    pantalla.Text = "";
-                }
-                //Si el operador es 2 (operacion de restar), coloca un "-"
-                else
-                {
-                    pantalla.Text = "-";
-                }
-
-            }
-        }
-
-        /*private void operacion(string operacion, int id)
-        {
-            //string operacion es el caracter que va a figurar por pantalla
-            //int id es el identificador de la operacion que se quiere realizar, 1(sumar),2(restar),3(multip),4(dividir)
-            try
-            {
-                //Guarda en una variable, el valor ASCII del ultimo caracter en pantalla
-                int ultimo = pantalla.Text[pantalla.Text.Length - 1];
-                if (ultimo >= 48 && ultimo <= 57)
-                {
-                    //Si la pantalla de resultado está vacia, coloca el ultimo numero digitado en la misma, y asigna la operacion
-                    if (pantallaRes.TextLength == 0)
-                    {
-                        pantallaRes.Text = pantalla.Text;
-                        controlador1.setUltimo("");
-                        controlador1.setOperacion(id);
-                    }
-                    //Si la pantalla de resultado ya contiene un resultado, realiza la operacion con el ultimo numero digitado y el numero de abajo
-                    else
-                    {
-                        pantallaRes.Text = (controlador1.Resultado(float.Parse(pantallaRes.Text), float.Parse(controlador1.getUltimo()))).ToString();
-                        controlador1.setUltimo("");
-                    }
-                    pantalla.Text = pantalla.Text + operacion;
-                    controlador1.setOperacion(id);
-                }
-                //Si el ultimo caracter es un "=" y la pantalla de resultado NO está vacia, coloca el resultado arriba para seguir operando
-                else if (ultimo == 61 && pantallaRes.TextLength != 0)
-                {
-                    pantalla.Text = pantallaRes.Text + operacion;
-                    controlador1.setOperacion(id);
-                    controlador1.setUltimo("");
-                }
-            }
-            //Control de excepciones en caso de que el usuario coloque un "operador" estando el campo vacio
-            catch (IndexOutOfRangeException)
-            {
-                //Si la pantalla esta en blanco y se presiona un operador, si es distinto a 2, no coloca nada
-                if(id != 2)
-                {
-                    pantalla.Text = "";
-                }
-                //Si el operador es 2 (operacion de restar), coloca un "-"
-                else
-                {
-                    pantalla.Text = "-";
-                }
-                
-            }
-
-        }*/
-
         private void btn0_Click(object sender, EventArgs e)
         {
             controlador.colocarNumero("0");
         }
-
         private void btn1_Click(object sender, EventArgs e)
         {
             controlador.colocarNumero("1");
         }
-
         private void btn2_Click(object sender, EventArgs e)
         {
             controlador.colocarNumero("2");
         }
-
         private void btn3_Click(object sender, EventArgs e)
         {
             controlador.colocarNumero("3");
@@ -186,24 +88,21 @@ namespace Calculadora
         }
         private void btnDividir_Click(object sender, EventArgs e)
         {
-            // operacion("/", 4);
             controlador.division();
         }
 
         private void btnMultip_Click(object sender, EventArgs e)
         {
-            //operacion("x", 3);
             controlador.multiplicacion();
         }
 
         private void btnResta_Click(object sender, EventArgs e)
         {
-            //operacion("-", 2);
+            controlador.resta();
         }
 
         private void btnSuma_Click(object sender, EventArgs e)
         {
-            //operacion("+", 1);
             controlador.suma();
         }
 
