@@ -118,13 +118,36 @@ namespace Calculadora
         }
         public void colocarParentesisCE()
         {
+            //Valida si el ultimo es numero, si es un ")", siempre y cuando exista un parentesis ya abierto
             if ((ultimoEsNumero() || ultimoCaracter() == 41) && modelo.esParentesis())
             {
                 float resultado = 0;
                 switch (modelo.getOperacion())
                 {
+                    //Existe o no una operacion de suma o resta pendiente, la resulve
+                    //para luego volver al modelo anterior y almacenar el resultado como un nuevo termino
                     case 0:
                         modelo.addTermino(float.Parse(modelo.getUltimoNumero()));
+                        resultado = resultadoParcial();
+                        modelo = modelo.getSubModelos().Last();
+                        modelo.setUltimoNumero(resultado.ToString());
+                        vista.pantalla.Text = vista.pantalla.Text + ")";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+                    //Existe una operacion de multiplicacion
+                    case 1:
+                        resultado = modelo.getBinomio() * float.Parse(modelo.getUltimoNumero());
+                        modelo.addTermino(resultado);
+                        resultado = resultadoParcial();
+                        modelo = modelo.getSubModelos().Last();
+                        modelo.setUltimoNumero(resultado.ToString());
+                        vista.pantalla.Text = vista.pantalla.Text + ")";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+                    //Existe una operacion de division
+                    case 2:
+                        resultado = modelo.getBinomio() / float.Parse(modelo.getUltimoNumero());
+                        modelo.addTermino(resultado);
                         resultado = resultadoParcial();
                         modelo = modelo.getSubModelos().Last();
                         modelo.setUltimoNumero(resultado.ToString());
@@ -138,11 +161,7 @@ namespace Calculadora
         {
             vista.pantalla.Text = "";
             vista.pantallaRes.Text = "";
-            modelo.setUltimoNumero("");
-            modelo.setSumas(new List<float>());
-            modelo.setSubModelos(new List<Modelo>());
-            modelo.setBinomio(0);
-            modelo.setOperacion(0);
+            modelo = new Modelo();
         }
         public void colocarNumero(string numero)
         {
@@ -243,7 +262,7 @@ namespace Calculadora
         {
             int ultimo = ultimoCaracter();
             //Si el ultimo es un numero o es una coma o la pantalla NO esta vacia, y NO sea un "-"
-            if (ultimo != 44 && ultimo != 0 && ultimo != 45 && ultimo != 61)
+            if (ultimoEsNumero() || ultimo == 41)
             {
                 float resultado;
                 switch (modelo.getOperacion())
@@ -276,7 +295,15 @@ namespace Calculadora
                         vista.pantallaRes.Text = resultadoParcial().ToString();
                         break;
                 }
-            }else if(ultimo == 0 || ultimo == 61)
+            }
+            //Si el ultimo es parentesis "("
+            else if (ultimo == 40)
+            {
+                modelo.setUltimoNumero("-");
+                vista.pantalla.Text = vista.pantalla.Text + "-";
+            }
+            //Si la pantalla está vacia o es un "="
+            else if (ultimo == 0 || ultimo == 61)
             {
                 borrarTodo();
                 vista.pantalla.Text = "-";
