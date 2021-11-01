@@ -108,27 +108,7 @@ namespace Calculadora
 
         private void btnIgual_Click(object sender, EventArgs e)
         {
-            /*
-            try
-            {
-                //Guarda en una variable, el valor ASCII del ultimo caracter en pantalla
-                int ultimo = pantalla.Text[pantalla.Text.Length - 1];
-                if (ultimo >= 48 && ultimo <= 57 && pantallaRes.TextLength != 0)
-                {
-                    pantallaRes.Text = (controlador1.Resultado(float.Parse(pantallaRes.Text), float.Parse(controlador1.getUltimo()))).ToString();
-                    if(ultimo != 61)
-                    {
-                        pantalla.Text = pantalla.Text + "=";
-                    }
-                }
-            }
-            //Control de excepciones en caso de que el usuario coloque un "-" estando el campo vacio
-            catch (IndexOutOfRangeException)
-            {
-                pantalla.Text = "";
-            }
-            */
-
+            controlador.colocarResultado();
         }
     }
             

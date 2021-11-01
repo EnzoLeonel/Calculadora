@@ -225,37 +225,9 @@ namespace Calculadora
             //Si el ultimo es un numero o es un ")"
             if (ultimoEsNumero() || ultimo == 41)
             {
-                float resultado;
-                switch (modelo.getOperacion())
-                {
-                    case 0:
-                        //Guarda el ultimo numero escrito en un nuevo termino
-                        modelo.addTermino(float.Parse(modelo.getUltimoNumero()));
-                        modelo.setUltimoNumero("");
-                        vista.pantalla.Text = vista.pantalla.Text + "+";
-                        vista.pantallaRes.Text = resultadoParcial().ToString();
-                        break;
-
-                    case 1:
-                        //Existe una operacion de multiplicar pendiente
-                        resultado = modelo.getBinomio() * float.Parse(modelo.getUltimoNumero());
-                        modelo.addTermino(resultado);
-                        modelo.setUltimoNumero("");
-                        modelo.setOperacion(0);
-                        vista.pantalla.Text = vista.pantalla.Text + "+";
-                        vista.pantallaRes.Text = resultadoParcial().ToString();
-                        break;
-
-                    case 2:
-                        //Existe una operacion de division pendiente
-                        resultado = modelo.getBinomio() / float.Parse(modelo.getUltimoNumero());
-                        modelo.addTermino(resultado);
-                        modelo.setUltimoNumero("");
-                        modelo.setOperacion(0);
-                        vista.pantalla.Text = vista.pantalla.Text + "+";
-                        vista.pantallaRes.Text = resultadoParcial().ToString();
-                        break;
-                }
+                resolverPendientes();
+                modelo.setOperacion(0);
+                vista.pantalla.Text = vista.pantalla.Text + "+";
             }
         }
         public void resta()
@@ -264,37 +236,10 @@ namespace Calculadora
             //Si el ultimo es un numero o es una coma o la pantalla NO esta vacia, y NO sea un "-"
             if (ultimoEsNumero() || ultimo == 41)
             {
-                float resultado;
-                switch (modelo.getOperacion())
-                {
-                    case 0:
-                        //Guarda el ultimo numero escrito en un nuevo termino
-                        modelo.addTermino(float.Parse(modelo.getUltimoNumero()));
-                        modelo.setUltimoNumero("-");
-                        vista.pantalla.Text = vista.pantalla.Text + "-";
-                        vista.pantallaRes.Text = resultadoParcial().ToString();
-                        break;
-
-                    case 1:
-                        //Existe una operacion de multiplicar pendiente
-                        resultado = modelo.getBinomio() * float.Parse(modelo.getUltimoNumero());
-                        modelo.addTermino(resultado);
-                        modelo.setUltimoNumero("-");
-                        modelo.setOperacion(0);
-                        vista.pantalla.Text = vista.pantalla.Text + "-";
-                        vista.pantallaRes.Text = resultadoParcial().ToString();
-                        break;
-
-                    case 2:
-                        //Existe una operacion de division pendiente
-                        resultado = modelo.getBinomio() / float.Parse(modelo.getUltimoNumero());
-                        modelo.addTermino(resultado);
-                        modelo.setUltimoNumero("-");
-                        modelo.setOperacion(0);
-                        vista.pantalla.Text = vista.pantalla.Text + "-";
-                        vista.pantallaRes.Text = resultadoParcial().ToString();
-                        break;
-                }
+                resolverPendientes();
+                modelo.setUltimoNumero("-");
+                modelo.setOperacion(0);
+                vista.pantalla.Text = vista.pantalla.Text + "-";
             }
             //Si el ultimo es parentesis "("
             else if (ultimo == 40)
@@ -409,6 +354,48 @@ namespace Calculadora
             modeloTemp.setParentesisAB();
             modeloTemp.addSubModelo(modelo);
             modelo = modeloTemp;
+        }
+        public void colocarResultado()
+        {
+            int ultimo = ultimoCaracter();
+            if ((ultimoEsNumero() || ultimo == 41) && !modelo.esParentesis())
+            {
+                resolverPendientes();
+                vista.pantalla.Text = vista.pantalla.Text + " =";
+                resultadoParcial();
+            }else if (modelo.esParentesis())
+            {
+                vista.pantallaRes.Text = "Error: Faltan cerrar parentesis";
+            }
+        }
+        public void resolverPendientes()
+        {
+            float resultado;
+            switch (modelo.getOperacion())
+            {
+                case 0:
+                    //Guarda el ultimo numero escrito en un nuevo termino
+                    modelo.addTermino(float.Parse(modelo.getUltimoNumero()));
+                    modelo.setUltimoNumero("");
+                    vista.pantallaRes.Text = resultadoParcial().ToString();
+                    break;
+
+                case 1:
+                    //Existe una operacion de multiplicar pendiente
+                    resultado = modelo.getBinomio() * float.Parse(modelo.getUltimoNumero());
+                    modelo.addTermino(resultado);
+                    modelo.setUltimoNumero("");
+                    vista.pantallaRes.Text = resultadoParcial().ToString();
+                    break;
+
+                case 2:
+                    //Existe una operacion de division pendiente
+                    resultado = modelo.getBinomio() / float.Parse(modelo.getUltimoNumero());
+                    modelo.addTermino(resultado);
+                    modelo.setUltimoNumero("");
+                    vista.pantallaRes.Text = resultadoParcial().ToString();
+                    break;
+            }
         }
     }
 }
