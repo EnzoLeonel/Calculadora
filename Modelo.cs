@@ -13,12 +13,21 @@ namespace Calculadora
         //Guarda temporalmente una operacion pendiente entre binomios
         private int operacion = 0;
         private float binomio = 0;
+        private bool parentesisAB = false;
         private List<float> sumas = new List<float>();
 
         //Lista para guardar parentesis como si fueran cuentas(modelos) individuales separados
         //del resto de la cuenta
-        private List<Modelo> parentesis = new List<Modelo>();
+        private List<Modelo> subModelos = new List<Modelo>();
 
+        public void setParentesisAB()
+        {
+            this.parentesisAB = true;
+        }
+        public bool esParentesis()
+        {
+            return parentesisAB;
+        }
         public void setUltimoNumero(string ultimoNum)
         {
             this.ultimoNumero = ultimoNum;
@@ -43,9 +52,13 @@ namespace Calculadora
         {
             this.sumas = sumas;
         }
-        public void setParentesis(List<Modelo> parentesis)
+        public void setSubModelos(List<Modelo> subModelos)
         {
-            this.parentesis = parentesis;
+            this.subModelos = subModelos;
+        }
+        public List<Modelo> getSubModelos()
+        {
+            return subModelos;
         }
         public void setOperacion(int operacion)
         {
@@ -62,6 +75,10 @@ namespace Calculadora
         public float getBinomio()
         {
             return this.binomio;
+        }
+        public void addSubModelo(Modelo modelo)
+        {
+            subModelos.Add(modelo);
         }
 
     }

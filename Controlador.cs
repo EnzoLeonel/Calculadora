@@ -95,13 +95,52 @@ namespace Calculadora
                 modelo.addUltimoNumero(",");
             }
         }
+        public void colocarParentesisAB()
+        {
+            int ultimo = ultimoCaracter();
+            if(!ultimoEsNumero() && ultimo != 44 && ultimo != 41)
+            {
+                switch (ultimo)
+                {
+                    case 45:
+                        modelo.setBinomio(-1f);
+                        modelo.setUltimoNumero("");
+                        modelo.setOperacion(1);
+                        nuevoModelo();
+                        vista.pantalla.Text = vista.pantalla.Text + "(";
+                        break;
+                    default:
+                        nuevoModelo();
+                        vista.pantalla.Text = vista.pantalla.Text + "(";
+                        break;
+                }
+            }
+        }
+        public void colocarParentesisCE()
+        {
+            if ((ultimoEsNumero() || ultimoCaracter() == 41) && modelo.esParentesis())
+            {
+                float resultado = 0;
+                switch (modelo.getOperacion())
+                {
+                    case 0:
+                        modelo.addTermino(float.Parse(modelo.getUltimoNumero()));
+                        resultado = resultadoParcial();
+                        modelo = modelo.getSubModelos().Last();
+                        modelo.setUltimoNumero(resultado.ToString());
+                        vista.pantalla.Text = vista.pantalla.Text + ")";
+                        vista.pantallaRes.Text = resultadoParcial().ToString();
+                        break;
+                }
+            }
+        }
         public void borrarTodo()
         {
             vista.pantalla.Text = "";
             vista.pantallaRes.Text = "";
             modelo.setUltimoNumero("");
             modelo.setSumas(new List<float>());
-            modelo.setParentesis(new List<Modelo>());
+            modelo.setSubModelos(new List<Modelo>());
             modelo.setBinomio(0);
             modelo.setOperacion(0);
         }
@@ -336,6 +375,13 @@ namespace Calculadora
                 }
             }
             return resultado;
+        }
+        public void nuevoModelo()
+        {
+            Modelo modeloTemp = new Modelo();
+            modeloTemp.setParentesisAB();
+            modeloTemp.addSubModelo(modelo);
+            modelo = modeloTemp;
         }
     }
 }

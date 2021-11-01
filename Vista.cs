@@ -75,12 +75,12 @@ namespace Calculadora
 
         private void btnParent1_Click(object sender, EventArgs e)
         {
-            pantalla.Text = pantalla.Text + "(";
+            controlador.colocarParentesisAB();
 
         }
         private void btnParent2_Click(object sender, EventArgs e)
         {
-            pantalla.Text = pantalla.Text + ")";
+            controlador.colocarParentesisCE();
         }
         private void btnPunto_Click(object sender, EventArgs e)
         {
