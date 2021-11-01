@@ -296,7 +296,7 @@ namespace Calculadora
             this.Controls.Add(this.btnBorrar);
             this.Controls.Add(this.pantalla);
             this.Name = "Vista";
-            this.Text = "Form1";
+            this.Text = "Calculadora";
             this.ResumeLayout(false);
             this.PerformLayout();
 
